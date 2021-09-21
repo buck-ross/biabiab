@@ -5,7 +5,7 @@ cd code
 
 # Configure the python executable:
 if type python3.7 >/dev/null 2>&1; then
-	export PYTHON=python
+	export PYTHON=python3.7
 elif type python >/dev/null 2>&1; then
 	export PYTHON=python
 fi
