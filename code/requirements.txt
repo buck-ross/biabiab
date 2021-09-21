@@ -1,0 +1,3 @@
+## The following requirements were added by pip freeze:
+selenium==3.141.0
+urllib3==1.26.6

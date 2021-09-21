@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Enter the code directory:
+cd code
+
+# Configure the python executable:
+if type python3.7 >/dev/null 2>&1; then
+	export PYTHON=python
+elif type python >/dev/null 2>&1; then
+	export PYTHON=python
+fi
+
+# Configure the python virtual environment:
+if ! test -d ./venv; then
+	$PYTHON -m venv venv
+	cd venv/bin
+	curl -L 'https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz' | tar xzv
+	cd ../..
+fi
+
+# Source the environment:
+source ./venv/bin/activate
+
+# Install the required dependencies:
+pip install -r requirements.txt -qqq
+if ! test -f ./venv/patch-lock; then
+	touch ./venv/patch-lock
+	patch venv/lib/python3.7/site-packages/selenium/webdriver/common/utils.py utils.py.patch >/dev/null 2>&1
+fi
+
+# ex: set ft=sh ff=unix ts=4 sw=8 tw=0 noet :
+

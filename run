@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Check that the installation is in place:
+if ! test -d ./code/venv; then
+	./recompile 2>&1 >/dev/null
+fi
+
+# Prepare the environment:
+cd code
+source ./venv/bin/activate
+
+# Run the test harness:
+python ./test.py
+
