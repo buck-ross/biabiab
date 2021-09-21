@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Clear the setup:
+test -f biabiab.zip && rm -v biabiab.zip
+rm -v allcode.* 2>/dev/null
+
+# Create all of the 'allcode.X' files:
+for ftype in 'html' 'js' 'patch' 'py' 'sh'; do
+	cat /dev/null $(find ./code -type f -name "*.$ftype" ! -path './code/venv/*') > allcode.$ftype
+done
+cat ./recompile ./run >> allcode.sh
+
+# Create the zip file:
+zip ./biabiab.zip ./allcode.* recompile run $(find ./code -type f ! -path './code/venv/*' ! -name '*.log')
+
