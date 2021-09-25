@@ -3,14 +3,16 @@
 * @param {HTMLElement} app A handle to the main application DOM node
 * @returns {Promise<Array>} A promise which resolves to an array of account objects
 */
-function loadFile(app) {
-	return new Promise(resolve => {
-		const fileInput = document.createElement('input');
-		const reader = new FileReader();
+function loadFile(app, id) {
+	const fileInput = document.createElement('input');
+	const reader = new FileReader();
 
-		// Configure the fileInput:
-		fileInput.type = 'file';
-		fileInput.id = 'addressFile';
+	// Configure the fileInput:
+	fileInput.type = 'file';
+	fileInput.id = id;
+
+	// Resolve the output once the file has been uploaded & processed:
+	return new Promise(resolve => {
 		fileInput.addEventListener('change', function(fileEvent) {
 			// Ensure that a valid file selection was made:
 			if(fileEvent.target.files.length !=1)
@@ -35,7 +37,6 @@ function loadFile(app) {
 
 			// Read the files as text:
 			reader.readAsText(fileEvent.target.files[0]);
-			fileInput.remove();
 		});
 
 		// Create the file input element:

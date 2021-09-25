@@ -7,7 +7,9 @@ from selenium.webdriver.support import expected_conditions
 
 # Prompt for all necessary user input:
 os.chdir('..')
-fname = os.path.realpath(input('Please provide the path to the input file: '))
+fname1 = os.path.realpath(input('Please provide the path to the first input file: '))
+fname2 = os.path.realpath(input('Please provide the path to the second input file: '))
+fname3 = os.path.realpath(input('Please provide the path to the third input file: '))
 os.chdir('code')
 
 # Launch a headless Firefox instance:
@@ -19,11 +21,15 @@ driver = webdriver.Firefox(options=driverOpts)
 driver.get('file://' + os.getcwd() + '/index.html')
 
 try:
-	# Upload the address file:
-	addressUpload = WebDriverWait(driver, 30).until(
-		expected_conditions.presence_of_element_located((By.ID, 'addressFile'))
+	# Wait for the input div to be displayed:
+	WebDriverWait(driver, 30).until(
+		expected_conditions.presence_of_element_located((By.ID, 'input'))
 	)
-	addressUpload.send_keys(fname)
+
+	# Upload all necessary files:
+	driver.find_element(By.ID, 'accounts1').send_keys(fname1)
+	driver.find_element(By.ID, 'accounts2').send_keys(fname3)
+	driver.find_element(By.ID, 'accounts3').send_keys(fname2)
 
 	# Wait for the output to be produced:
 	result = WebDriverWait(driver, 30).until(
