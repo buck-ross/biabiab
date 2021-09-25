@@ -1,4 +1,4 @@
-window.addEventListener('load', function() {
+window.addEventListener('DOMContentLoaded', function() {
 	const app = document.getElementById('app');
 
 	// Construct all dynamic elements needed for the application:
@@ -21,7 +21,11 @@ window.addEventListener('load', function() {
 	}).then(trees => {
 		// TODO: Convert the list of merkle trees into a list of sequentially mined blocks
 		// Return the results to the test harness:
-		res.innerText = trees[0][0][0] + '\n' + trees[1][0][0] + '\n' + trees[2][0][0];
+		for(tree of trees) {
+			const p = document.createElement('p');
+			p.innerText = tree[0][0];
+			res.appendChild(p);
+		}
 		document.body.appendChild(res);
 	});
 
