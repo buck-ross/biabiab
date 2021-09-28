@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	// Construct all dynamic elements needed for the application:
 	const input = document.createElement('div');
 	input.id = 'input';
-	const res = document.createElement('p');
+	const res = document.createElement('div');
 	res.id = 'result';
 
 	Promise.all([
@@ -19,11 +19,15 @@ window.addEventListener('DOMContentLoaded', function() {
 		// Convert each account list into a set of merkle trees:
 		return Promise.all(accountSets.map(set => mktree(set)));
 	}).then(trees => {
+		// Compute all nonce values from the set of trees:
+		const target = Math.pow(2, 255);
+		return Promise.all(trees.map(tree => calculate_nonce(tree[0][0], target)));
+	}).then(nonces => {
 		// TODO: Convert the list of merkle trees into a list of sequentially mined blocks
 		// Return the results to the test harness:
-		for(tree of trees) {
+		for(nonce of nonces) {
 			const p = document.createElement('p');
-			p.innerText = tree[0][0];
+			p.innerText = nonce;
 			res.appendChild(p);
 		}
 		document.body.appendChild(res);
