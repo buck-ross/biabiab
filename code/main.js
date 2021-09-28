@@ -19,14 +19,24 @@ window.addEventListener('DOMContentLoaded', function() {
 		// Convert each account list into a set of merkle trees:
 		return Promise.all(accountSets.map(set => mktree(set)));
 	}).then(trees => {
-		// TODO: Convert the list of merkle trees into a list of sequentially mined blocks
-		// Return the results to the test harness:
-		for(tree of trees) {
-			const p = document.createElement('p');
-			p.innerText = tree[0][0];
-			res.appendChild(p);
+		// Convert the list of merkle trees into a list of sequentially mined blocks
+		const blockchain=[];
+		let prev_block='0';
+		const target=2;
+		for(tree of trees){
+			// each block being added to the chain will await the prev_block
+			blockchain.push(create_block(prev_block,tree,target));
+			prev_block=blocks[blocks.length-1];
 		}
-		document.body.appendChild(res);
+		Promise.all(blockchain).then((blockchain)=>{
+			// Return the results to the test harness:
+			for(block of blockchain) {
+				const p = document.createElement('p');
+				p.innerText = block.stringify_block(true);
+				res.appendChild(p);
+			}
+			document.body.appendChild(res);
+		});
 	});
 
 	// Prompt the user for input:
