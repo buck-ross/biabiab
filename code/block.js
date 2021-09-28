@@ -74,5 +74,7 @@ async function create_block(prev,accounts,target){
 	let nonce=calculate_nonce(accounts[accounts.length-1],target);
 	[prev_hash,nonce]=await Promise.all([prev_hash,nonce]);
 	let block=new Block(prev_hash,accounts,target,nonce);
+	console.log("block added");
+	console.log(block);
 	return block;
 }

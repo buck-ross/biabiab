@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		for(tree of trees){
 			// each block being added to the chain will await the prev_block
 			blockchain.push(create_block(prev_block,tree,target));
-			prev_block=blocks[blocks.length-1];
+			prev_block=blockchain[blockchain.length-1];
 		}
 		Promise.all(blockchain).then((blockchain)=>{
 			// Return the results to the test harness:
