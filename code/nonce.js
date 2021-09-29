@@ -17,19 +17,14 @@ async function try_nonce(nonce, root_hash, target){
 * @return correct nonce
 */
 async function calculate_nonce(root_hash, target) {
-	let nonce = null;
-	let a = 0;
-	let b = 5; // batch size
-
-	while (nonce == null) {
-		let tmp = [];
-		for (let i = a; i < a+b; i++) {
-			tmp.push(try_nonce(i, root_hash, target));
+	let i = 0;
+	while (true) {
+		try {
+			// Try to compute the current nonce:
+			return await try_nonce(i, root_hash, target);
+		} catch(e) {
+			// Increment `i` & try the next nonce:
+			++i;
 		}
-
-		nonce = await Promise.any(tmp).catch((reason)=>null);
-		a += b;
 	}
-
-	return nonce;
 }
