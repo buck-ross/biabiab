@@ -14,8 +14,8 @@ class Block {
 		out += this.prev_hash + '\n';
 		out += this.root_hash + '\n';
 		out += this.timestamp + '\n';
-		out += this.target + '\n';
-		out += this.nonce + '\n';
+		out += this.target.toString(16) + '\n';
+		out += this.nonce.toString(16) + '\n';
 		out += 'END HEADER\n';
 		return out;
 	}
@@ -51,7 +51,7 @@ async function calculate_nonce(root_hash, target) {
 // returns the hash of the header of a completed block object
 async function hash_header(block) {
 	if(typeof block !== 'string') {
-		const header = '' + block.prev_hash + block.root_hash + block.timestamp + block.target + block.nonce;
+		const header = block.stringify_header();
 		const header_hashed = stringify_hash(await hash_string(header));
 		return header_hashed;
 	}
@@ -63,15 +63,8 @@ async function hash_header(block) {
 // @param target the target for the nonce to beat
 // @returns the newly added block
 async function create_block(prev, accounts, target) {
-	let prev_hash;
-	console.log(prev);
-	if(prev === '0') {
-		prev_hash = '0';
-	} else{
-		prev_hash = await hash_header(await prev);
-	}
-	let nonce = calculate_nonce(accounts[accounts.length - 1], target);
-	[prev_hash, nonce] = await Promise.all([prev_hash, nonce]);
-	let block = new Block(prev_hash, accounts, target, nonce);
+	const prev_hash = prev ? (await hash_header(prev)) : '0';
+	const nonce = await calculate_nonce(accounts[accounts.length - 1], target);
+	const block = new Block(prev_hash, accounts, target, nonce);
 	return block;
 }
