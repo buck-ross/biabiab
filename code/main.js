@@ -20,13 +20,13 @@ window.addEventListener('DOMContentLoaded', function() {
 		return Promise.all(accountSets.map(set => mktree(set)));
 	}).then(trees => {
 		// Convert the list of merkle trees into a list of sequentially mined blocks
-		const blockchain=[];
-		let prev_block='0';
-		const target=2;
+		const blockchain = [];
+		let prev_block = '0';
+		const target = 2;
 		for(tree of trees){
 			// each block being added to the chain will await the prev_block
-			blockchain.push(create_block(prev_block,tree,target));
-			prev_block=blockchain[blockchain.length-1];
+			blockchain.push(create_block(prev_block, tree, target));
+			prev_block = blockchain[blockchain.length - 1];
 		}
 		Promise.all(blockchain).then((blockchain)=>{
 			// Return the results to the test harness:
