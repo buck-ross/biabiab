@@ -40,9 +40,6 @@ class Block {
 	toString() {
 		return this.stringify_block(true);
 	}
-	print(enable) {
-		console.log(this.stringify_block(enable));
-	}
 }
 // returns the hash of the header of a completed block object
 async function hash_header(block) {

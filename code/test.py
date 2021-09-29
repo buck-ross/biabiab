@@ -28,8 +28,8 @@ try:
 
 	# Upload all necessary files:
 	driver.find_element(By.ID, 'accounts1').send_keys(fname1)
-	driver.find_element(By.ID, 'accounts2').send_keys(fname3)
-	driver.find_element(By.ID, 'accounts3').send_keys(fname2)
+	driver.find_element(By.ID, 'accounts2').send_keys(fname2)
+	driver.find_element(By.ID, 'accounts3').send_keys(fname3)
 
 	# Wait for the output to be produced:
 	result = WebDriverWait(driver, 30).until(
