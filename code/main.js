@@ -18,16 +18,24 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		// Convert each account list into a set of merkle trees:
 		return Promise.all(accountSets.map(set => mktree(set)));
-	}).then(trees => {
-		// Compute all nonce values from the set of trees:
+	}).then(async trees => {
+		// Declare the blockchain & all dynamic parameters:
+		const blockchain = [];
 		const target = Math.pow(2, 255);
-		return Promise.all(trees.map(tree => calculate_nonce(tree[0][0], target)));
-	}).then(nonces => {
-		// TODO: Convert the list of merkle trees into a list of sequentially mined blocks
+		let prev_block = null;
+
+		// Convert the list of merkle trees into a list of sequentially mined blocks:
+		for(tree of trees){
+			// each block being added to the chain will await the prev_block
+			prev_block = await create_block(prev_block, tree, target);
+			blockchain.push(prev_block);
+		}
+		return blockchain;
+	}).then(blockchain => {
 		// Return the results to the test harness:
-		for(nonce of nonces) {
+		for(block of blockchain) {
 			const p = document.createElement('p');
-			p.innerText = nonce;
+			p.innerText = block.toString();
 			res.appendChild(p);
 		}
 		document.body.appendChild(res);
