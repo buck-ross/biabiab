@@ -39,32 +39,34 @@ function parse_blockchain_file(app, id) {
 						if(header_start>=0 && header_end>header_start){
 							// lines for this header
 							const header_lines=lines.slice(header_start+1,header_end);
-							console.log(header_lines);
 							const prev_hash=header_lines.shift();
 							const root_hash=header_lines.shift();
-							//TODO:verify timestamp
-							const timestamp=parseInt(header_lines.shift());
+							const tmp_timestamp=header_lines.shift();
+							// fail on bad timestamp
+							if(!/^[0-9]+$/.test(tmp_timestamp)){
+								return Promise.reject("bad timestamp");
+							}
+							const timestamp=parseInt(tmp_timestamp);
 							const target=header_lines.shift();
 							const nonce=header_lines.shift();
 							// remaining block lines are accounts
-							console.log(header_start,header_end);
 							block_lines.splice(header_start-1,header_end-header_start+1);
-							console.log(block_lines);
-							//TODO:verify balances
-							const accountSets=block_lines.map(addr => {
+							const account_set=block_lines.map(addr => {
+								// Verify each balance
+								const balance=addr.split(/\s+/)[1]
+								if(!/^[0-9]+$/.test(balance)){
+									return Promise.reject("bad balance");
+								}
 								return {
 									address: addr.split(/\s+/)[0],
-									balance: parseInt(addr.split(/\s+/)[1])
+									balance: parseInt(balance)
 								}
 							});
-							console.log(accountSets);
-							console.log("treeing");
-							//return Promise.reject("bleh");
-							const accounts=await Promise.all(accountSets.map(set=>mktree(set)));
-							console.log("treeing");
-							console.log(block_lines);
-							console.log(accounts);
+							// construct merkel tree
+							const accounts=await mktree(account_set);
+							// format as a block
 							const block = new Block(prev_hash, root_hash, timestamp, accounts, target, nonce);
+							// add the block to the chain
 							blockchain.push(block);
 						}
 						else{
