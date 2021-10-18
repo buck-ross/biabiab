@@ -1,8 +1,8 @@
 class Block {
-	constructor(prev_hash,acc_tree,target,nonce) {
+	constructor(prev_hash,root_hash,timestamp,acc_tree,target,nonce) {
 		this.prev_hash = prev_hash;
-		this.root_hash = acc_tree[0][0];
-		this.timestamp = Date.now();
+		this.root_hash = root_hash;
+		this.timestamp = timestamp;
 		this.target = target;
 		this.nonce = nonce;
 		this.accounts = acc_tree[acc_tree.length - 1];
@@ -57,7 +57,9 @@ async function hash_header(block) {
 // @returns the newly added block
 async function create_block(prev, accounts, target) {
 	const prev_hash = prev ? (await hash_header(prev)) : '0';
+	const root_hash=accounts[0][0];
+	const timestamp=Date.now();
 	const nonce = await calculate_nonce(accounts[0][0], target);
-	const block = new Block(prev_hash, accounts, target, nonce);
+	const block = new Block(prev_hash, root_hash, timestamp, accounts, target, nonce);
 	return block;
 }

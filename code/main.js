@@ -6,6 +6,8 @@ window.addEventListener('DOMContentLoaded', function() {
 	input.id = 'input';
 	const res = document.createElement('div');
 	res.id = 'result';
+	const parser_input = document.createElement('div');
+	parser_input.id = 'parser_input';
 
 	Promise.all([
 		// Obtain a list of account files from the user:
@@ -15,6 +17,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	]).then(accountSets => {
 		// Remove the input element:
 		input.remove();
+		parser_input.remove();
 
 		// Convert each account list into a set of merkle trees:
 		return Promise.all(accountSets.map(set => mktree(set)));
@@ -41,6 +44,16 @@ window.addEventListener('DOMContentLoaded', function() {
 		document.body.appendChild(res);
 	});
 
+	parse_blockchain_file(parser_input, 'blockchain_file').then(result=>{
+		input.remove();
+		parser_input.remove();
+		const p = document.createElement('p');
+		p.innerText=result;
+		res.appendChild(p);
+	});
+
 	// Prompt the user for input:
 	app.appendChild(input);
+
+	app.appendChild(parser_input);
 });
