@@ -1,3 +1,5 @@
 /allcode.*
 *.txt
 *.zip
+
+!/test-cases/*.txt
