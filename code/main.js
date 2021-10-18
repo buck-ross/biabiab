@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	}).then(async trees => {
 		// Declare the blockchain & all dynamic parameters:
 		const blockchain = [];
-		const target = Math.pow(2, 255);
+		const target = Math.pow(2, 255).toString(16).padStart(64, '0');
 		let prev_block = null;
 
 		// Convert the list of merkle trees into a list of sequentially mined blocks:
