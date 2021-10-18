@@ -3,11 +3,11 @@ async function try_nonce(nonce, root_hash, target){
 	const nonce_hash = stringify_hash(await hash_string(root_hash + nonce));
 
 	// test against target
-	if (parseInt(nonce_hash, 16) <= target) {
+	if (compare_hashes(nonce_hash, target) === -1) {
 		return nonce;
 	}
 
-	return Promise.reject();
+	return null;
 }
 
 /**
@@ -19,12 +19,12 @@ async function try_nonce(nonce, root_hash, target){
 async function calculate_nonce(root_hash, target) {
 	let i = 0;
 	while (true) {
-		try {
-			// Try to compute the current nonce:
-			return await try_nonce(i, root_hash, target);
-		} catch(e) {
-			// Increment `i` & try the next nonce:
-			++i;
-		}
+		// Try to compute the current nonce:
+		let nonce = await try_nonce(i, root_hash, target);
+		if(nonce !== null)
+			return nonce;
+
+		// Increment `i` & try the next nonce:
+		++i;
 	}
 }

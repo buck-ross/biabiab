@@ -6,7 +6,6 @@ class Block {
 		this.target = target;
 		this.nonce = nonce;
 		this.accounts = acc_tree[acc_tree.length - 1];
-		this.print_account
 	}
 	stringify_header() {
 		let out = '';
@@ -56,7 +55,7 @@ async function hash_header(block) {
 // @param target the target for the nonce to beat
 // @returns the newly added block
 async function create_block(prev, accounts, target) {
-	const prev_hash = prev ? (await hash_header(prev)) : '0';
+	const prev_hash = prev ? (await hash_header(prev)) : ''.padStart(64, '0');
 	const root_hash=accounts[0][0];
 	const timestamp=Date.now();
 	const nonce = await calculate_nonce(accounts[0][0], target);
