@@ -65,10 +65,12 @@ async function proof_of_membership(account, block, blockchain, indices){
     for (var i = mtree.length - 2; i >= 0; i--) {
         hashes_mktree.push(mtree[i][j]);
 
-        if (j%2 == 0) {
-            hashes_mktree.push(mtree[mtree.length - 1][j+1]);
-        } else {
-            hashes_mktree.push(mtree[mtree.length - 1][j-1]);
+        if (i != 0) {
+            if (j%2 == 0) {
+                hashes_mktree.push(mtree[i][j+1]);
+            } else {
+                hashes_mktree.push(mtree[i][j-1]);
+            };  
         };
 
         j = Math.floor(j/2);
