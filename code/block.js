@@ -56,7 +56,7 @@ async function hash_header(block) {
 // @returns the newly added block
 async function create_block(prev, accounts, target) {
 	const prev_hash = prev ? (await hash_header(prev)) : ''.padStart(64, '0');
-	const nonce = await calculate_nonce(accounts[0][0], target);
-	const block = new Block(prev_hash, accounts, target, nonce);
+	const block = new Block(prev_hash, accounts, target, 0);
+	await calculate_nonce(block);
 	return block;
 }

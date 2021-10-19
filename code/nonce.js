@@ -1,13 +1,14 @@
-async function try_nonce(nonce, root_hash, target){
+async function try_nonce(block){
 	// Compute the hash of the root hash concatenated with the nonce:
-	const nonce_hash = stringify_hash(await hash_string(root_hash + nonce));
+	const nonce_hash = await hash_header(block);
+	console.log(nonce_hash);
 
 	// test against target
-	if (compare_hashes(nonce_hash, target) === -1) {
-		return nonce;
+	if (compare_hashes(nonce_hash, block.target) === -1) {
+		return true;
 	}
 
-	return null;
+	return false;
 }
 
 /**
@@ -16,15 +17,14 @@ async function try_nonce(nonce, root_hash, target){
 * @param target
 * @return correct nonce
 */
-async function calculate_nonce(root_hash, target) {
-	let i = 0;
+async function calculate_nonce(block) {
+	block.nonce = 0;
 	while (true) {
 		// Try to compute the current nonce:
-		let nonce = await try_nonce(i, root_hash, target);
-		if(nonce !== null)
-			return nonce;
+		if(await try_nonce(block))
+			return;
 
-		// Increment `i` & try the next nonce:
-		++i;
+		// Increment the nonce & try the next nonce:
+		++block.nonce;
 	}
 }
