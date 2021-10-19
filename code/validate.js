@@ -68,9 +68,8 @@ async function validateBlock(block, parentHash, parentAge) {
 	// Validate the nonce:
 	assert(block.nonce !== null,
 		`Nonce '${block.nonce}' is null`);
-	const nonce = await try_nonce(block.nonce, block.root_hash, block.target);
-	assert(block.nonce === nonce,
-		`Nonce '${block.nonce}' produces '${nonce}' when tested`);
+	assert(await try_nonce(block),
+		`Nonce '${block.nonce}' fails when tested`);
 
 	// Signal that the block is valid:
 	return null;
@@ -85,5 +84,22 @@ async function validateChain(chain) {
 	// Validate the chain length:
 	assert(chain.length > 0,
 		'Chain must contain at least one block');
+
+	// Compute the parent hash of each block:
+	const parentHashes = await Promise.all(chain.map(block => hash_header(block)));
+	parentHashes.unshift(''.padStart(64, '0'));
+
+	// Compute the parent timestamps:
+	const parentAges = chain.map(block => block.timestamp);
+	parentAges.unshift(0);
+
+	// Validate each block:
+	let blocksValid = [];
+	for(let i = 0; i < chain.length; ++i)
+		blocksValid.push(validateBlock(chain[i], parentHashes[i], parentAges[i]));
+
+	// The chain is valid iff every block is valid:
+	await Promise.all(blocksValid);
+	return null;
 }
 
