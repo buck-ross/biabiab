@@ -19,7 +19,8 @@ window.addEventListener('DOMContentLoaded', function() {
 		// Parse the input block:
 		choices.chain = parse_blockchain_file(choices.fData);
 
-		// TODO: Validate the input block
+		// Validate the input block:
+		await validateChain(choices.chain);
 
 		return choices;
 	}).then(async choices => {
@@ -27,7 +28,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		// Decode `choices.action` to figure out which action to take:
 		switch(choices.action) {
 			case 'validate':
-				return 'TODO: validate';
+				return 'Block is valid';
 			case 'balance':
 				return 'TODO: balance';
 			case 'membership':
