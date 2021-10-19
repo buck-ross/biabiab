@@ -17,9 +17,9 @@ function promptAction(app, id) {
 
 	// Populate the parent element with choices:
 	const options = [
-		[ 'validate', 'Validate Only' ],
-		[ 'balance', 'Find Balance' ],
-		[ 'membership', 'Compute Proof of Membership' ]
+		[ 'validate', 'validate' ],
+		[ 'balance', 'balance' ],
+		[ 'membership', 'membership' ]
 	];
 	for(option of options) {
 		let opt = document.createElement('option');

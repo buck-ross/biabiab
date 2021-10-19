@@ -6,10 +6,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
 # Prompt for all necessary user input:
+while True:
+	action = input('Enter the action to be preformed [validate, balance, membership]: ')
+	if action in [ 'validate', 'balance', 'membership' ]:
+		break
+	print('Invalid input. Try again.')
+
+if action in [ 'balance', 'membership' ]:
+	param = input('Please provide the address to query: ')
+else:
+	param = 'a'
+
 os.chdir('..')
-fname1 = os.path.realpath(input('Please provide the path to the first input file: '))
-fname2 = os.path.realpath(input('Please provide the path to the second input file: '))
-fname3 = os.path.realpath(input('Please provide the path to the third input file: '))
+fname = os.path.realpath(input('Please provide the path to the file containing the blockchain: '))
 os.chdir('code')
 
 # Launch a headless Firefox instance:
@@ -27,9 +36,12 @@ try:
 	)
 
 	# Upload all necessary files:
-	driver.find_element(By.ID, 'accounts1').send_keys(fname1)
-	driver.find_element(By.ID, 'accounts2').send_keys(fname2)
-	driver.find_element(By.ID, 'accounts3').send_keys(fname3)
+	for option in driver.find_elements(By.TAG_NAME, 'option'):
+		if option.text == action:
+			option.click()
+
+	driver.find_element(By.ID, 'param').send_keys(param)
+	driver.find_element(By.ID, 'blockchain').send_keys(fname)
 
 	# Wait for the output to be produced:
 	result = WebDriverWait(driver, 30).until(

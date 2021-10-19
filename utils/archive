@@ -11,5 +11,5 @@ done
 cat ./recompile ./run >> allcode.sh
 
 # Create the zip file:
-zip ./biabiab.zip ./allcode.* recompile run $(find ./code -type f ! -path './code/venv/*' ! -name '*.log')
+zip ./biabiab.zip ./allcode.* recompile run $(find ./test-cases) $(find ./code -type f ! -path './code/venv/*' ! -name '*.log')
 

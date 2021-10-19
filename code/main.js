@@ -24,7 +24,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		return choices;
 	}).then(async choices => {
-		console.log(choices);
 		// Decode `choices.action` to figure out which action to take:
 		switch(choices.action) {
 			case 'validate':
@@ -35,7 +34,15 @@ window.addEventListener('DOMContentLoaded', function() {
 					return `Address ${choices.param} not found.`;
 				return `balance is ${balance}.`;
 			case 'membership':
-				return 'TODO: membership';
+				// test of proof of membership
+				//console.log(await find_account("6c642844f8c6a312e82a409495a4a4a4eab567e541d89ef71b4801f79575dcbd", choices.chain));
+				const proof = await find_account(choices.param, choices.chain);
+				let out = '';
+				for(let hash of proof[0])
+					out += hash + '\n';
+				for(let block of proof[1])
+					out += block.stringify_header() + await hash_header(block) + '\n';
+				return out;
 			default:
 				throw new Error(`Unknown action: ${choices.action}`);
 		}

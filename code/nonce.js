@@ -1,7 +1,6 @@
 async function try_nonce(block){
 	// Compute the hash of the root hash concatenated with the nonce:
 	const nonce_hash = await hash_header(block);
-	console.log(nonce_hash);
 
 	// test against target
 	if (compare_hashes(nonce_hash, block.target) === -1) {
