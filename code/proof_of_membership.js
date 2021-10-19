@@ -7,21 +7,22 @@ async function find_account(address, blockchain){
         cnt_a=0;
         for ( account of block.accounts){ // loop leaf nodes
             if (address == account.address) {
-                break;
+                // console.log(cnt_b, cnt_b);
+                // console.log(blockchain);
+                // blockchain[cnt_b].accounts[cnt_a] == account
+                let valid = await proof_of_membership(blockchain[cnt_b].accounts[cnt_a], 
+                    blockchain[cnt_b], 
+                    blockchain, 
+                    [cnt_b, cnt_a]);
+
+                return valid;
             };
             cnt_a++;
         }
         cnt_b++;
     }
 
-
-    // blockchain[cnt_b].accounts[cnt_a] == account
-    let valid = await proof_of_membership(blockchain[cnt_b].accounts[cnt_a], 
-        blockchain[cnt_b], 
-        blockchain, 
-        [cnt_b, cnt_a]);
-
-    return valid;
+    return undefined;
 }
 
 function structify_header(block) {
@@ -44,30 +45,30 @@ async function proof_of_membership(account, block, blockchain, indices){
 
     let hashes_mktree = [];
 
-    let mktree = await mktree(block.accounts);
+    let mtree = await mktree(block.accounts);
 
-    let acc_node = mktree[mktree.length - 1][cnt_a];
-    let acc_hash = hash_string(acc_node.address + acc_node.balance);
+    let acc_node = mtree[mtree.length - 1][cnt_a];
+    let acc_hash = stringify_hash(await hash_string(acc_node.address + acc_node.balance));
 
     let acc_sib;
     if (cnt_a%2 == 0) {
-        acc_sib = mktree[mktree.length - 1][cnt_a+1];
+        acc_sib = mtree[mtree.length - 1][cnt_a+1];
     } else {
-        acc_sib = mktree[mktree.length - 1][cnt_a-1];
+        acc_sib = mtree[mtree.length - 1][cnt_a-1];
     };
 
-    let acc_sib_hash = hash_string(acc_sib.address + acc_sib.balance);
+    let acc_sib_hash = stringify_hash(await hash_string(acc_sib.address + acc_sib.balance));
 
     hashes_mktree = [acc_hash, acc_sib_hash];
 
     let j = Math.floor(cnt_a/2);
-    for (var i = mktree.length - 2; i >= 0; i--) {
-        hashes_mktree.push(mktree[i][j]);
+    for (var i = mtree.length - 2; i >= 0; i--) {
+        hashes_mktree.push(mtree[i][j]);
 
         if (j%2 == 0) {
-            hashes_mktree.push(mktree[mktree.length - 1][j+1]);
+            hashes_mktree.push(mtree[mtree.length - 1][j+1]);
         } else {
-            hashes_mktree.push(mktree[mktree.length - 1][j-1]);
+            hashes_mktree.push(mtree[mtree.length - 1][j-1]);
         };
 
         j = Math.floor(j/2);

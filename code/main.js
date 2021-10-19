@@ -31,7 +31,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			blockchain.push(prev_block);
 		}
 		return blockchain;
-	}).then(blockchain => {
+	}).then(async blockchain => {
 		// Return the results to the test harness:
 		for(block of blockchain) {
 			const p = document.createElement('p');
@@ -39,6 +39,8 @@ window.addEventListener('DOMContentLoaded', function() {
 			res.appendChild(p);
 		}
 		document.body.appendChild(res);
+		// test of proof of membership
+		console.log(await find_account("4ecde249d747d51d869ae689c44cc1e6191b581b8315edac97990fdc4dce40d7", blockchain));
 	});
 
 	// Prompt the user for input:
