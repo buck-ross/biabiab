@@ -30,7 +30,10 @@ window.addEventListener('DOMContentLoaded', function() {
 			case 'validate':
 				return 'Block is valid';
 			case 'balance':
-				return 'TODO: balance';
+				const balance = find_balance(choices.param, choices.chain);
+				if(balance === null)
+					return `Address ${choices.param} not found.`;
+				return `balance is ${balance}.`;
 			case 'membership':
 				return 'TODO: membership';
 			default:
