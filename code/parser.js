@@ -23,7 +23,7 @@ function parse_blockchain_file(app, id) {
 				const lines = readEvent.target.result
 					.split(/(\n|\r)/)
 					.filter(elem => !/^\s*$/.test(elem));
-				console.log(lines);
+				//console.log(lines);
 				//parse blocks until there are no lines left
 				const blockchain=[];
 				while(lines.length>0){
@@ -55,13 +55,16 @@ function parse_blockchain_file(app, id) {
 								// Verify each balance
 								const balance=addr.split(/\s+/)[1]
 								if(!/^[0-9]+$/.test(balance)){
-									return Promise.reject("bad balance");
+									return undefined;
 								}
 								return {
 									address: addr.split(/\s+/)[0],
 									balance: parseInt(balance)
 								}
 							});
+							if(account_set.some((set)=>set==undefined)){
+								return Promise.reject("bad balance");
+							}
 							// construct merkel tree
 							const accounts=await mktree(account_set);
 							// format as a block
@@ -81,7 +84,6 @@ function parse_blockchain_file(app, id) {
 				}
 
 				// Return the blockchain
-				console.log(blockchain);
 				resolve(blockchain);
 			});
 

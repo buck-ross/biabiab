@@ -45,10 +45,12 @@ window.addEventListener('DOMContentLoaded', function() {
 	});
 
 	parse_blockchain_file(parser_input, 'blockchain_file').then(result=>{
+		// here is where the serialized blockchain files are returned as blockchain objects
 		input.remove();
 		parser_input.remove();
 		const p = document.createElement('p');
-		p.innerText=result;
+		console.log(result);
+		//p.innerText=result;
 		res.appendChild(p);
 	});
 
