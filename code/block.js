@@ -1,7 +1,7 @@
 class Block {
-	constructor(prev_hash,root_hash,timestamp,acc_tree,target,nonce) {
+	constructor(prev_hash,timestamp,acc_tree,target,nonce) {
 		this.prev_hash = prev_hash;
-		this.root_hash = root_hash;
+		this.root_hash = acc_tree[0][0];
 		this.timestamp = timestamp;
 		this.target = target;
 		this.nonce = nonce;
