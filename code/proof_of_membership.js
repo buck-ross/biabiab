@@ -46,6 +46,7 @@ async function proof_of_membership(account, block, blockchain, indices){
     let hashes_mktree = [];
 
     let mtree = await mktree(block.accounts);
+    console.log(mtree);
 
     let acc_node = mtree[mtree.length - 1][cnt_a];
     let acc_hash = stringify_hash(await hash_string(acc_node.address + acc_node.balance));
@@ -62,8 +63,8 @@ async function proof_of_membership(account, block, blockchain, indices){
     hashes_mktree = [acc_hash, acc_sib_hash];
 
     let j = Math.floor(cnt_a/2);
-    for (var i = mtree.length - 2; i >= 0; i--) {
-        hashes_mktree.push(mtree[i][j]);
+    for (var i = mtree.length - 3; i >= 0; i--) {
+        hashes_mktree.push(mtree[i][j]); // parent
 
         if (i != 0) {
             if (j%2 == 0) {
