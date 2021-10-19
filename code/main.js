@@ -8,36 +8,42 @@ window.addEventListener('DOMContentLoaded', function() {
 	res.id = 'result';
 
 	Promise.all([
-		// Obtain a list of account files from the user:
-		loadFile(input, 'accounts1'),
-		loadFile(input, 'accounts2'),
-		loadFile(input, 'accounts3')
-	]).then(accountSets => {
-		// Remove the input element:
-		input.remove();
+		// Obtain all necessary inputs:
+		promptAction(input, 'prompt'),
+		promptParam(input, 'param'),
+		loadFile(input, 'blockchain'),
+	]).then(choices => {
+		// Decode the array into an object:
+		return { action: choices[0], param: choices[1], fData: choices[2] };
+	}).then(async choices => {
+		// Parse the input block:
+		choices.chain = parse_blockchain_file(choices.fData);
 
-		// Convert each account list into a set of merkle trees:
-		return Promise.all(accountSets.map(set => mktree(set)));
-	}).then(async trees => {
-		// Declare the blockchain & all dynamic parameters:
-		const blockchain = [];
-		const target = Math.pow(2, 255).toString(16).padStart(64, '0');
-		let prev_block = null;
+		// TODO: Validate the input block
 
-		// Convert the list of merkle trees into a list of sequentially mined blocks:
-		for(tree of trees){
-			// each block being added to the chain will await the prev_block
-			prev_block = await create_block(prev_block, tree, target);
-			blockchain.push(prev_block);
+		return choices;
+	}).then(async choices => {
+		console.log(choices);
+		// Decode `choices.action` to figure out which action to take:
+		switch(choices.action) {
+			case 'validate':
+				return 'TODO: validate';
+			case 'balance':
+				return 'TODO: balance';
+			case 'membership':
+				return 'TODO: membership';
+			default:
+				throw new Error(`Unknown action: ${choices.action}`);
 		}
-		return blockchain;
-	}).then(blockchain => {
+	}).then(output => {
 		// Return the results to the test harness:
-		for(block of blockchain) {
-			const p = document.createElement('p');
-			p.innerText = block.toString();
-			res.appendChild(p);
-		}
+		res.innerText = output;
+		document.body.appendChild(res);
+	}).catch(err => {
+		// Return the error to the test harness:
+		console.error(err);
+		res.classList.add('error');
+		res.innerText = err.message;
 		document.body.appendChild(res);
 	});
 
